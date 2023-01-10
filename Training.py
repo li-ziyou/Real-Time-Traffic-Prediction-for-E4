@@ -10,7 +10,7 @@ LOCAL=False
 if LOCAL == False:
 
    stub = modal.Stub()
-   image = modal.Image.debian_slim().pip_install(["requests", "huggingface_hub", "datetime", "datasets", "scikit-learn"]).apt_install(["libsndfile1"])
+   image = modal.Image.debian_slim().pip_install(["requests", "huggingface_hub", "datetime", "datasets", "scikit-learn", "lazypredict"]).apt_install(["libsndfile1"])
    @stub.function(image=image, schedule=modal.Period(hours=1), secret=modal.Secret.from_name("ScalableML_lab1"))
    def f():
        g()
@@ -39,16 +39,17 @@ def g():
       X_train, y_train = X_train_df[[ 't', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_train_df['congestionLevel'] #ref time
       X_test, y_test = X_test_df[[ 't', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_test_df['congestionLevel']
 
+      from lazypredict.Supervised import LazyRegressor      
       # Multi regression
-      #reg = LazyRegressor(verbose=0, ignore_warnings=False, custom_metric=None)
-      #models, predictions = reg.fit(X_train, X_test, y_train, y_test)
-      #print(models)
+      reg = LazyRegressor(verbose=0, ignore_warnings=False, custom_metric=None)
+      models, predictions = reg.fit(X_train, X_test, y_train, y_test)
+      print(models)
 
       # Single reg
-      model = LinearRegression()
-      model.fit(X_train,y_train)
+      # model = LinearRegression()
+      # model.fit(X_train,y_train)
 
-      predictions = model.predict(X_test)
+      # predictions = model.predict(X_test)
 
       #plt.scatter(y_test,predictions)
       #plt.xlabel('Y Test')
