@@ -27,13 +27,20 @@ print(features, "\n" ,target)
 #X = X.astype(np.float32)
 #offset = int(X.shape[0] * 0.9)
 
-X_train, y_train = features["train"][['referenceTime', 't', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], target["train"]['congestionLevel']
-X_test, y_test = features["test"].data, target["test"].data
+
+X_train_df = pd.DataFrame.from_dict(features["train"])
+y_train_df = pd.DataFrame.from_dict(target["train"])
+X_test_df  = pd.DataFrame.from_dict(features["test"])
+y_test_df  = pd.DataFrame.from_dict(target["test"])
+#print(X_train_df,y_train_df)
+
+X_train, y_train = X_train_df[[ 't', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_train_df['congestionLevel'] #ref time
+X_test, y_test = X_test_df[[ 't', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_test_df['congestionLevel']
 #print(y_train)
 
-#reg = LazyRegressor(verbose=0, ignore_warnings=False, custom_metric=None)
-#models, predictions = reg.fit(X_train, X_test, y_train, y_test)
-#print(models)
+reg = LazyRegressor(verbose=0, ignore_warnings=False, custom_metric=None)
+models, predictions = reg.fit(X_train, X_test, y_train, y_test)
+print(models)
 
 print(X_train,"\n y train:\n",y_train)
 model = LinearRegression()#copy_X=True, fit_intercept=True, n_jobs=1, normalize=False)
