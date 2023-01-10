@@ -13,15 +13,13 @@ traffic_dataset = DatasetDict()
 traffic_dataset = load_dataset("tilos/IL2223_project") #read dataset from huggingface
 #print(traffic_dataset)
 traffic = traffic_dataset['train'].train_test_split(test_size=0.2, shuffle=True) #splite train and test
-print(traffic.data)
+print(traffic)
 
-target = traffic.data['congestionLevel']
-traffic.data = traffic.data.remove_columns(["congestionLevel"])
-#print(traffic.data)
+target = traffic.remove_columns(['referenceTime', 't', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence', 'congestionLevel']) #lable
+features = traffic.remove_columns(["congestionLevel"]) # features
 
-
-X, y = shuffle(traffic.data, traffic.target, random_state=13)
-#X = X.astype(np.float32)
+X, y = shuffle(features.data, target.data, random_state=13)
+X = X.astype(np.float32)
 
 offset = int(X.shape[0] * 0.9)
 
