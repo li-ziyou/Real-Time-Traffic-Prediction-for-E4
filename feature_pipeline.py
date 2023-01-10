@@ -1,13 +1,13 @@
 import os
 import modal
 
-LOCAL=True
+LOCAL=False
 
 if LOCAL == False:
 
    stub = modal.Stub()
-   image = modal.Image.debian_slim().pip_install(["requests","csv", "huggingface_hub", "json", "datetime", "datasets"]).apt_install(["libsndfile1"])
-   @stub.function(image=image, schedule=modal.Period(hours=1), secret=modal.Secret.from_name("ScalableML_lab1"), timeout=5000)
+   image = modal.Image.debian_slim().pip_install(["requests", "huggingface_hub", "datetime", "datasets"]).apt_install(["libsndfile1"])
+   @stub.function(image=image, schedule=modal.Period(hours=1), secret=modal.Secret.from_name("ScalableML_lab1"))
    def f():
        g()
 
@@ -16,15 +16,12 @@ def g():
     from huggingface_hub import login, notebook_login
     from datasets import load_dataset, Dataset
     import requests
-    import os.path
-    import csv
     import json
     import time
     from datetime import datetime
 
     # Login to huggingface
     login(token="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")
-    notebook_login()
 
     # Get traffic data of E4 entering KTH Kista from tomtom API, updated in real time
 
@@ -64,7 +61,10 @@ def g():
                     "confidence": confidence, 
                     "congestionLevel": congestionLevel}
 
-
+    print("Row generated: ")
+    print(row)
+    
+    # Update dataset
     ds = load_dataset("tilos/IL2223_project", split='train')
     ds = ds.add_item(row)
     ds.push_to_hub("tilos/IL2223_project")
