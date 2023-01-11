@@ -55,6 +55,18 @@ def g():
 
       corr_analysis(traffic_dataset)
 
+      # Time-Congestion (TC) plot overview
+      TC_time_df = pd.DataFrame.from_dict(traffic_dataset['train'])
+      timestamp_TC = timeconvert(TC_time_df['referenceTime'])
+      TC_time_df = TC_time_df.drop(columns='referenceTime')
+      TC_time_df['referenceTime'] = timestamp_TC
+      x_TC = TC_time_df['referenceTime']
+      y_TC = pd.DataFrame.from_dict(traffic_dataset['train'])['congestionLevel']
+      plt.plot(x_TC,y_TC)
+      plt.show()
+
+
+
       features = traffic.remove_columns(["congestionLevel"]) # features
       target = traffic.remove_columns(['referenceTime', 't', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']) #lable
       print(features, "\n" ,target)
@@ -74,8 +86,8 @@ def g():
       X_test_df['referenceTime'] = timestamp_test
 
       #set train and test set for training
-      X_train, y_train = X_train_df[[ 'referenceTime', "t",'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_train_df['congestionLevel'] #ref time
-      X_test, y_test = X_test_df[[ 'referenceTime', "t",'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_test_df['congestionLevel']
+      X_train, y_train = X_train_df[[ 'referenceTime',"t",'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_train_df['congestionLevel'] #ref time
+      X_test, y_test = X_test_df[[ 'referenceTime',"t",'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_test_df['congestionLevel']
 
       print(X_train,"\n",y_train)
 
@@ -98,10 +110,10 @@ def g():
 
       # Plot scatter
 
-      #plt.scatter(y_test,y_predictions)
-      #plt.xlabel('Y Test')
-      #plt.ylabel('Predicted Y')
-      #plt.show()
+      plt.scatter(y_test,y_predictions)
+      plt.xlabel('Y Test')
+      plt.ylabel('Predicted Y')
+      plt.show()
 
       from sklearn import metrics
       print('MAE:', metrics.mean_absolute_error(y_test, y_predictions))
