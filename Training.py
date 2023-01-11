@@ -5,7 +5,7 @@ from sklearn.linear_model import LinearRegression
 import os
 import modal
 
-LOCAL=False
+LOCAL=True
 
 if LOCAL == False:
 
@@ -15,6 +15,16 @@ if LOCAL == False:
    def f():
        g()
 
+def timeconvert(time):
+    import dateutil.parser as dp
+    timestamp = []
+    for i in time:
+        # print(i)
+        i = dp.parse(i).timestamp()
+        timestamp.append(i)
+    # traffic_dataset.update({"timestamp": timestamp})
+    return timestamp
+
 def g():
 
       from huggingface_hub import login, notebook_login
@@ -22,9 +32,11 @@ def g():
       login(token="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")
 
       from datasets import load_dataset, DatasetDict
-      traffic_dataset = DatasetDict()
+      #traffic_dataset = DatasetDict()
       traffic_dataset = load_dataset("tilos/IL2223_project") #read dataset from huggingface
       #print(traffic_dataset)
+
+
       traffic = traffic_dataset['train'].train_test_split(test_size=0.2, shuffle=True) #splite train and test
 
       features = traffic.remove_columns(["congestionLevel"]) # features
@@ -36,13 +48,26 @@ def g():
       X_test_df  = pd.DataFrame.from_dict(features["test"])
       y_test_df  = pd.DataFrame.from_dict(target["test"])
 
-      X_train, y_train = X_train_df[[ 't', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_train_df['congestionLevel'] #ref time
-      X_test, y_test = X_test_df[[ 't', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_test_df['congestionLevel']
+      #datetime convert to timestamp
+      timestamp_train = timeconvert(X_train_df['referenceTime'])
+      X_train_df = X_train_df.drop(columns='referenceTime')
+      X_train_df['referenceTime'] = timestamp_train
+
+      timestamp_test = timeconvert(X_test_df['referenceTime'])
+      X_test_df = X_test_df.drop(columns='referenceTime')
+      X_test_df['referenceTime'] = timestamp_test
+
+      #set train and test set for training
+      X_train, y_train = X_train_df[[ 'referenceTime','t', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_train_df['congestionLevel'] #ref time
+      X_test, y_test = X_test_df[[ 'referenceTime','t', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_test_df['congestionLevel']
+
+      print(X_train,"\n",y_train)
 
       # Multi regression
-      #reg = LazyRegressor(verbose=0, ignore_warnings=False, custom_metric=None)
-      #models, predictions = reg.fit(X_train, X_test, y_train, y_test)
-      #print(models)
+      from Supervised import LazyRegressor
+      reg = LazyRegressor(verbose=0, ignore_warnings=False, custom_metric=None)
+      models, predictions = reg.fit(X_train, X_test, y_train, y_test)
+      print(models)
 
       # Single reg
       model = LinearRegression()
