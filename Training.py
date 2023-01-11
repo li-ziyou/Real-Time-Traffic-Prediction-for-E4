@@ -75,18 +75,18 @@ def g():
       model = LinearRegression()
       model.fit(X_train,y_train)
 
-      predictions = model.predict(X_test)
-
+      y_predictions = model.predict(X_test)
+      print("True:\n ",y_test,"\n","Predict:\n ", y_predictions)
       #plt.scatter(y_test,predictions)
       #plt.xlabel('Y Test')
       #plt.ylabel('Predicted Y')
 
       from sklearn import metrics
-      print('MAE:', metrics.mean_absolute_error(y_test, predictions))
-      print('MSE:', metrics.mean_squared_error(y_test, predictions))
-      print('RMSE:', np.sqrt(metrics.mean_squared_error(y_test, predictions)))
+      print('MAE:', metrics.mean_absolute_error(y_test, y_predictions))
+      print('MSE:', metrics.mean_squared_error(y_test, y_predictions))
+      print('RMSE:', np.sqrt(metrics.mean_squared_error(y_test, y_predictions)))
       print('R2 score:', model.score(X_test, y_test))
-
+      print('R2 score:', metrics.r2_score(y_test, y_predictions))
 
       # Save the model to huggingface
       import pickle
