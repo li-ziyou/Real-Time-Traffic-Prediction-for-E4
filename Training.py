@@ -6,12 +6,12 @@ import matplotlib.pyplot as plt
 import os
 import modal
 
-LOCAL=True
+LOCAL=False
 
 if LOCAL == False:
 
    stub = modal.Stub()
-   image = modal.Image.debian_slim().pip_install(["requests", "huggingface_hub", "datetime", "datasets", "scikit-learn", "lazypredict"]).apt_install(["libsndfile1"])
+   image = modal.Image.debian_slim().pip_install(["requests", "huggingface_hub", "datetime", "datasets", "scikit-learn", "lazypredict", "matplotlib", "seaborn"]).apt_install(["libsndfile1"])
    @stub.function(image=image, schedule=modal.Period(hours=1), secret=modal.Secret.from_name("ScalableML_lab1"))
    def f():
        g()
@@ -94,7 +94,7 @@ def g():
 
 
       # Multi regression
-      from Supervised import LazyRegressor
+      from lazypredict.Supervised import LazyRegressor
 
       reg = LazyRegressor(verbose=0, ignore_warnings=False, custom_metric=None)
       models, predictions = reg.fit(X_train, X_test, y_train, y_test)
