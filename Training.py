@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
 
 import os
 import modal
@@ -25,6 +26,19 @@ def timeconvert(time):
     # traffic_dataset.update({"timestamp": timestamp})
     return timestamp
 
+def corr_analysis(traffic_dataset):
+    # correlation analysis
+    import seaborn as sns
+    datacorr = pd.DataFrame.from_dict(traffic_dataset['train'])
+    timestamp_corr = timeconvert(datacorr['referenceTime'])
+    datacorr = datacorr.drop(columns='referenceTime')
+    datacorr['referenceTime'] = timestamp_corr
+    #print(datacorr)
+
+    plt.subplots(figsize=(12, 8))
+    sns.heatmap(datacorr.corr(), cmap='RdGy')
+    plt.show()
+
 def g():
 
       from huggingface_hub import login, notebook_login
@@ -38,6 +52,8 @@ def g():
 
 
       traffic = traffic_dataset['train'].train_test_split(test_size=0.2, shuffle=True) #splite train and test
+
+      corr_analysis(traffic_dataset)
 
       features = traffic.remove_columns(["congestionLevel"]) # features
       target = traffic.remove_columns(['referenceTime', 't', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']) #lable
@@ -58,14 +74,16 @@ def g():
       X_test_df['referenceTime'] = timestamp_test
 
       #set train and test set for training
-      X_train, y_train = X_train_df[[ 'referenceTime','t', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_train_df['congestionLevel'] #ref time
-      X_test, y_test = X_test_df[[ 'referenceTime','t', 'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_test_df['congestionLevel']
+      X_train, y_train = X_train_df[[ 'referenceTime', "t",'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_train_df['congestionLevel'] #ref time
+      X_test, y_test = X_test_df[[ 'referenceTime', "t",'ws', 'prec1h', 'fesn1h', 'vis', 'confidence']], y_test_df['congestionLevel']
 
       print(X_train,"\n",y_train)
 
 
+
       # Multi regression
       from Supervised import LazyRegressor
+
       reg = LazyRegressor(verbose=0, ignore_warnings=False, custom_metric=None)
       models, predictions = reg.fit(X_train, X_test, y_train, y_test)
       print(models)
@@ -77,9 +95,13 @@ def g():
 
       y_predictions = model.predict(X_test)
       print("True:\n ",y_test,"\n","Predict:\n ", y_predictions)
-      #plt.scatter(y_test,predictions)
+
+      # Plot scatter
+
+      #plt.scatter(y_test,y_predictions)
       #plt.xlabel('Y Test')
       #plt.ylabel('Predicted Y')
+      #plt.show()
 
       from sklearn import metrics
       print('MAE:', metrics.mean_absolute_error(y_test, y_predictions))
