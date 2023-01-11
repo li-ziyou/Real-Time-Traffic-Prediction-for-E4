@@ -1,5 +1,5 @@
-torch
-numpy
-transformers
+sklearn
 gradio
-pytube
+joblib
+pandas
+datasets
