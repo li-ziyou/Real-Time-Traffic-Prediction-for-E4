@@ -10,7 +10,7 @@ LOCAL=True
 if LOCAL == False:
 
    stub = modal.Stub()
-   image = modal.Image.debian_slim().pip_install(["requests", "huggingface_hub", "datetime", "datasets", "scikit-learn"]).apt_install(["libsndfile1"])
+   image = modal.Image.debian_slim().pip_install(["requests", "huggingface_hub", "datetime", "datasets", "scikit-learn", "lazypredict"]).apt_install(["libsndfile1"])
    @stub.function(image=image, schedule=modal.Period(hours=1), secret=modal.Secret.from_name("ScalableML_lab1"))
    def f():
        g()
@@ -32,7 +32,7 @@ def g():
       login(token="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")
 
       from datasets import load_dataset, DatasetDict
-      #traffic_dataset = DatasetDict()
+      traffic_dataset = DatasetDict()
       traffic_dataset = load_dataset("tilos/IL2223_project") #read dataset from huggingface
       #print(traffic_dataset)
 
@@ -63,11 +63,13 @@ def g():
 
       print(X_train,"\n",y_train)
 
+
       # Multi regression
       from Supervised import LazyRegressor
       reg = LazyRegressor(verbose=0, ignore_warnings=False, custom_metric=None)
       models, predictions = reg.fit(X_train, X_test, y_train, y_test)
       print(models)
+
 
       # Single reg
       model = LinearRegression()
@@ -83,6 +85,7 @@ def g():
       print('MAE:', metrics.mean_absolute_error(y_test, predictions))
       print('MSE:', metrics.mean_squared_error(y_test, predictions))
       print('RMSE:', np.sqrt(metrics.mean_squared_error(y_test, predictions)))
+      print('R2 score:', model.score(X_test, y_test))
 
 
       # Save the model to huggingface
