@@ -4,14 +4,14 @@ from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import AdaBoostRegressor
 from sklearn.metrics import r2_score
 import os
-import modal
+# import modal
 
-LOCAL=False
+LOCAL=True
 
 if LOCAL == False:
 
    stub = modal.Stub()
-   image = modal.Image.debian_slim().pip_install(["requests", "huggingface_hub", "datetime", "datasets", "scikit-learn", "lazypredict", "prophet"]).apt_install(["libsndfile1"])
+   image = modal.Image.debian_slim().pip_install(["requests", "huggingface_hub", "datetime", "datasets", "scikit-learn", "lazypredict", "prophet", "numpy==1.24.1"]).apt_install(["libsndfile1"])
    @stub.function(image=image, schedule=modal.Period(hours=1), secret=modal.Secret.from_name("ScalableML_lab1"))
    def f():
        g()
@@ -75,8 +75,10 @@ def g():
 
 
       from prophet import Prophet
-      model = Prophet(daily_seasonality=True)
+      model = Prophet()
       df = pd.concat([X_train, y_train], axis=1)
+      df['floor'] = 0.0
+      df["cap"] = 1.0
       print(df)
       model.fit(df)
       predictions = model.predict(pd.DataFrame(X_test))
@@ -91,6 +93,7 @@ def g():
       print("y_test", y_test)
       print("R2Score", r2_score(y_test, predictions["yhat"]))
       fig1 = model.plot(predictions)
+      print(fig1)
 
       # Save the model to huggingface
       import pickle
@@ -100,14 +103,14 @@ def g():
       #from huggingface_hub import create_repo
       #create_repo(repo_id="Traffic_Prediction")
 
-      from huggingface_hub import upload_file
-      upload_file(
-         path_or_fileobj="traffic_model.pkl",
-         path_in_repo="traffic_model.pkl",
-         repo_id="tilos/Traffic_Prediction"
-      )
+      # from huggingface_hub import upload_file
+      # upload_file(
+      #    path_or_fileobj="traffic_model.pkl",
+      #    path_in_repo="traffic_model.pkl",
+      #    repo_id="tilos/Traffic_Prediction"
+      # )
 
-      print("done")
+      # print("done")
 
 
 if __name__ == "__main__":

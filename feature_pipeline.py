@@ -7,7 +7,7 @@ if LOCAL == False:
 
    stub = modal.Stub()
    image = modal.Image.debian_slim().pip_install(["requests", "huggingface_hub", "datetime", "datasets"]).apt_install(["libsndfile1"])
-   @stub.function(image=image, schedule=modal.Period(hours=1), secret=modal.Secret.from_name("ScalableML_lab1"))
+   @stub.function(image=image, schedule=modal.Period(minutes=10), secret=modal.Secret.from_name("ScalableML_lab1"))
    def f():
        g()
 
@@ -43,7 +43,10 @@ def g():
     json_response_smhi = json.loads(response_smhi.text) 
 
     # weather data manual https://opendata.smhi.se/apidocs/metanalys/parameters.html#parameter-wsymb
-    referenceTime = json_response_smhi["referenceTime"]
+    # referenceTime = json_response_smhi["referenceTime"]
+
+    # Use current time
+    referenceTime = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
 
     t             = json_response_smhi["timeSeries"][0]["parameters"][0]["values"][0] # Temperature
     ws            = json_response_smhi["timeSeries"][0]["parameters"][4]["values"][0] # Wind Speed
@@ -63,7 +66,7 @@ def g():
 
     print("Row generated: ")
     print(row)
-    
+
     # Update dataset
     ds = load_dataset("tilos/IL2223_project", split='train')
     ds = ds.add_item(row)

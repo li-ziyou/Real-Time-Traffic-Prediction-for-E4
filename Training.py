@@ -13,7 +13,7 @@ if LOCAL == False:
 
    stub = modal.Stub()
    image = modal.Image.debian_slim().pip_install(["requests", "huggingface_hub", "datetime", "datasets", "scikit-learn", "lazypredict", "matplotlib", "seaborn"]).apt_install(["libsndfile1"])
-   @stub.function(image=image, schedule=modal.Period(hours=1), secret=modal.Secret.from_name("ScalableML_lab1"))
+   @stub.function(image=image, schedule=modal.Period(days=1), secret=modal.Secret.from_name("ScalableML_lab1"))
    def f():
        g()
 
