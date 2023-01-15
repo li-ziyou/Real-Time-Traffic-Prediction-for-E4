@@ -24,7 +24,9 @@ To run the feature pipeline automatically, it is deployed on Modal and the featu
 are captured and stored every 10 minutes.
 
 ### Features Correlation Analysis
-According to the correlation analysis of the current data, temperature and time have the largest correlation with the degree of congestion level. We believe that confidence of data is an important feature. Since the confidence of the data obtained so far is all 1 (perfect confidence), the result shown in the model is that the data confidence has nothing to do with traffic. We believe that more data in the future will change this relationship and therefore retain it.
+According to the correlation analysis of the current data, temperature and time have the largest correlation with the degree of congestion level. Traffic congestion often occurs in the afternoon of a day, which may be caused by people commuting. In addition, the current data show a negative correlation between traffic fluency and temperature. In other words, the higher the temperature, the less smooth the traffic. This is because people tend to drive less in cold temperatures (roads can be icy), avoiding congestion.
+
+We believe that confidence of data is an important feature. Since the confidence of the data obtained so far is all 1 (perfect confidence), the result shown in the model is that the data confidence has nothing to do with traffic. We believe that more data in the future will change this relationship and therefore retain it.
 
 The feature pipeline can be found [here](https://github.com/Tilosmsh/IL2223_project/blob/main/feature_pipeline.py).
 ## Training Pipeline
