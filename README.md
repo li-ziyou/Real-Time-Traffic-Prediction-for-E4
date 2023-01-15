@@ -10,7 +10,7 @@ the clearness of E4 traffic based on the time of day and the weather condition o
 is free freeflow level, which equals to the quotient of the actual speed and the freeflow speed, with
 0 showing a total congestion and 1 showing a complete freeflow.
 
-The service UI is built as a [Huggingface Space](https://huggingface.co/spaces/tilos/Real_Time_Traffic_Prediction) with the inference pipeline built in.
+The service UI is built as a [Huggingface Space](https://huggingface.co/spaces/Chenzhou/Real_Time_Traffic_Prediction) with the inference pipeline built in.
 
 ## Feature Pipeline
 
