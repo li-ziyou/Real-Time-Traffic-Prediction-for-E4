@@ -48,23 +48,24 @@ def g():
 
       from datasets import load_dataset, DatasetDict
       traffic_dataset = DatasetDict()
-      traffic_dataset = load_dataset("tilos/IL2223_project") #read dataset from huggingface
-      #print(traffic_dataset)
 
+      # traffic_dataset = load_dataset("tilos/IL2223_project") #read dataset from huggingface
+      # traffic = traffic_dataset['train'].train_test_split(test_size=0.2, shuffle=True) #splite train and test
 
-      traffic = traffic_dataset['train'].train_test_split(test_size=0.2, shuffle=True) #splite train and test
+      traffic_dataset = load_dataset("tilos/IL2223_project", split='train[0:58]') #read weekday dataset from huggingface
+      traffic = traffic_dataset.train_test_split(test_size=0.2, shuffle=True) #splite train and test
 
-      corr_analysis(traffic_dataset)
+      # corr_analysis(traffic_dataset)
 
       # Time-Congestion (TC) plot overview
-      TC_time_df = pd.DataFrame.from_dict(traffic_dataset['train'])
-      timestamp_TC = timeconvert(TC_time_df['referenceTime'])
-      TC_time_df = TC_time_df.drop(columns='referenceTime')
-      TC_time_df['referenceTime'] = timestamp_TC
-      x_TC = TC_time_df['referenceTime']
-      y_TC = pd.DataFrame.from_dict(traffic_dataset['train'])['congestionLevel']
-      plt.plot(x_TC,y_TC)
-      plt.show()
+      # TC_time_df = pd.DataFrame.from_dict(traffic_dataset['train'])
+      # timestamp_TC = timeconvert(TC_time_df['referenceTime'])
+      # TC_time_df = TC_time_df.drop(columns='referenceTime')
+      # TC_time_df['referenceTime'] = timestamp_TC
+      # x_TC = TC_time_df['referenceTime']
+      # y_TC = pd.DataFrame.from_dict(traffic_dataset['train'])['congestionLevel']
+      # plt.plot(x_TC,y_TC)
+      # plt.show()
 
 
 
