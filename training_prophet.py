@@ -44,8 +44,6 @@ def g():
       traffic_dataset = DatasetDict()
       traffic_dataset = load_dataset("tilos/IL2223_project") #read dataset from huggingface
       traffic_dataset = traffic_dataset.rename_columns({"referenceTime": "ds", "congestionLevel": "y"})
-      #print(traffic_dataset)
-
 
       traffic = traffic_dataset['train'].train_test_split(test_size=0.2, shuffle=True) #splite train and test
 

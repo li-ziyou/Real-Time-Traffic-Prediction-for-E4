@@ -54,7 +54,7 @@ def g():
 
       traffic_dataset = load_dataset("tilos/IL2223_project", split='train[0:58]') #read weekday dataset from huggingface
       traffic = traffic_dataset.train_test_split(test_size=0.2, shuffle=True) #splite train and test
-
+      print(traffic)
       # corr_analysis(traffic_dataset)
 
       # Time-Congestion (TC) plot overview

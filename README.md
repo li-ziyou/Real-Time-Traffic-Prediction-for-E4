@@ -19,7 +19,7 @@ API from Tomtom](https://developer.tomtom.com/products/traffic-api)
 and the hourly updated weather data from the nearest weather station from the
 [API from SMHI](https://opendata.smhi.se/apidocs/metanalys/index.html)
 as features and stores them as 
-[Huggingface Dataset](https://huggingface.co/datasets/tilos/IL2223_project).
+[Huggingface Dataset](https://huggingface.co/datasets/tilos/IL2223_project). We selected the timestamp of retrieval, air temperature, wind speed, precipitation, visibility, confidence of traffic data and the conputed freeflow level as features.
 To run the feature pipeline automatically, it is deployed on Modal and the features
 are captured and stored every 10 minutes.
 
