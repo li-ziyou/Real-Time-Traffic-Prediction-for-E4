@@ -36,6 +36,8 @@ The feature pipeline can be found [here](https://github.com/Tilosmsh/IL2223_proj
 Several machine learning models have been compared and AdaBoostRegression
 is chosen as it showed best performance in terms of RMSE and R2 score. 
 
+We are also experimenting with [Prophet](https://facebook.github.io/prophet/), an effective time-series forecasting procedure which gives us a lot of option parameters such as custom changepoints and seasonality and might be useful for this task. As it has not yielded good results so far, we did not proceed with it.
+
 ### Training
 
 The training pipeline retrieves features stored on huggingface and
